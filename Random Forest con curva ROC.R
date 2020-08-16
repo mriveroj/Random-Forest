@@ -13,13 +13,13 @@ datos$Y<- factor(datos$Y)
 datos$Tipo.de.partido<- factor(datos$Tipo.de.partido)
 #Partición de los datos
 #Hacemos la semilla para que la división de los datos sea la misma
-set.seed(2020)
+set.seed(1234)
 #Datos de entrenamiento (80% de los datos)
 train <- createDataPartition(datos$Y, p=0.8, list = F)
 #Creación del modelo
 attach(datos)
 fit <- randomForest(Y~PosicionEquipo+PosicionRival+PuntosAbajo+Tipo.de.partido, data = train,
-                    ntree=600,importance=TRUE,maxnodes=10,mtry=25)
+                    ntree=50,importance=TRUE,maxnodes=10,mtry=25)
 
 plot(fit,main = "Random Forest's error rates", 
      legend=c(x=500, y=0.20, legend=c("Resilient","No resilient")),
@@ -61,7 +61,7 @@ data.test <- datos[-train,]
 library(pROC)
 result.roc <- roc(data.test$Y,probs[,2])
 plot(result.roc , print.thres="best", print..thres.best.method =
-       "closest.topleft")
+       "closest.topleft", main= "ROC curve")
 result.coord <- coords(result.roc,"best",best.method =
                          "closest.topleft", ret=c("threshold","accurracy"))
 #Para obtener el accurracy y teta de corte
